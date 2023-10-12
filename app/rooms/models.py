@@ -3,7 +3,7 @@ from app.database import Base
 
 
 class Rooms(Base):
-    """Модель для таблицы отелей."""
+    """Модель для таблицы комнат."""
 
     __tablename__ = "rooms"
 
