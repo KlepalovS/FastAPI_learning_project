@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.bookings.dao import BookingsDAO
+from app.bookings.schemas import SBooking
 
 
 router = APIRouter(
@@ -10,6 +11,6 @@ router = APIRouter(
 
 
 @router.get("")
-async def get_bookings():
+async def get_bookings() -> list[SBooking]:
     """Эндпоинт для получения всех бронирований."""
     return await BookingsDAO.get_all()
