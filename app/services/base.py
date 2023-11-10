@@ -15,7 +15,7 @@ class BaseDAO:
         Если экземпляр не получен - возвращает None.
         """
         async with async_session_maker() as session:
-            query = select(cls.model.__table__.columns).filter_by(id=model_id)
+            query = select(cls.model).filter_by(id=model_id)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
@@ -28,7 +28,7 @@ class BaseDAO:
         возвращается None.
         """
         async with async_session_maker() as session:
-            query = select(cls.model.__table__.columns).filter_by(**filter_by)
+            query = select(cls.model).filter_by(**filter_by)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
@@ -36,7 +36,7 @@ class BaseDAO:
     async def get_all(cls, **filter_by):
         """Метод для получения всех экземпляров."""
         async with async_session_maker() as session:
-            query = select(cls.model.__table__.columns).filter_by(**filter_by)
+            query = select(cls.model).filter_by(**filter_by)
             result = await session.execute(query)
             return result.mappings().all()
 

@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
+    ACCESS_TOKEN_LIFETIME: int
+    SECRET_KEY: str
+    ALGORITHM: str
 
     class Config:
         env_file = ".env"

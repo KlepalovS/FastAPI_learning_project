@@ -1,9 +1,10 @@
 from pydantic import BaseModel, EmailStr
 
 
-class SUserRegister(BaseModel):
+class SUserAuth(BaseModel):
     """
-    Pydantic схема для регистрации пользователя.
+    Pydantic схема для регистрации пользователя,
+    логирования пользователя.
     """
 
     email: EmailStr
