@@ -5,7 +5,7 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
 def get_password_hash(password: str) -> str:
-    """Получает захешированную строку с паролем."""
+    """Получает захэшированную строку с паролем."""
     return pwd_context.hash(password)
 
 
