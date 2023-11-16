@@ -16,5 +16,5 @@ router = APIRouter(
 async def get_bookings(
     user: Users = Depends(get_current_user)
 ) -> list[SBooking]:
-    """Эндпоинт для получения всех бронирований."""
+    """Эндпоинт для получения всех бронирований пользователя."""
     return await BookingsDAO.get_all(user_id=user.id)

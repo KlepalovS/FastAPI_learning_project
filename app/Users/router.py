@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 from app.users.auth import (
     authenticate_user, create_access_token, get_password_hash
 )
 from app.users.dao import UsersDAO
+from app.users.dependencies import get_current_admin_user, get_current_user
+from app.users.models import Users
 from app.users.schemas import SUserAuth
 
 
@@ -45,3 +47,29 @@ async def login_user(response: Response, user_data: SUserAuth):
     access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("booking_access_token", access_token, httponly=True)
     return {"access_token": access_token}
+
+
+@router.post('/logout')
+async def logout_user(response: Response):
+    """
+    Эндпоинт для выхода пользователя из системы.
+    Удаляет access токен из куки.
+    """
+    response.delete_cookie("booking_access_token")
+    return {"message": "Пользователь вышел из системы."}
+
+
+@router.get("/me")
+async def get_users_me(current_user: Users = Depends(get_current_user)):
+    """Эндпоинт,который возвращает текущего пользователя."""
+    return current_user
+
+
+@router.get("/all")
+async def get_all_users(current_user: Users = Depends(get_current_admin_user)):
+    """
+    Эндпоинт,который возвращает всех пользователей имеющихся в системе.
+    Необходимо для работы администратора. Для корректной работы необходимо
+    реализвовать наличие поля роли для пользователя.
+    """
+    return await UsersDAO.get_all()
