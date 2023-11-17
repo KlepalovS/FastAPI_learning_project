@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Response
 
-from app.users.auth import (
-    authenticate_user, create_access_token, get_password_hash
-)
+from app.exceptions import (IncorrectEmailOrPasswordException,
+                            UserAlreadyExistsException)
+from app.users.auth import (authenticate_user, create_access_token,
+                            get_password_hash)
 from app.users.dao import UsersDAO
 from app.users.dependencies import get_current_admin_user, get_current_user
 from app.users.models import Users
 from app.users.schemas import SUserAuth
-
 
 router = APIRouter(
     prefix='/auth',
@@ -16,7 +16,7 @@ router = APIRouter(
 
 
 @router.post('/register')
-async def register_user(user_data: SUserAuth):
+async def register_user(user_data: SUserAuth) -> None:
     """
     Эндпоинт, осуществляющий регистрацию нового пользователя.
     Принимает пользовательские данные (логин(почта) и пароль).
@@ -27,13 +27,13 @@ async def register_user(user_data: SUserAuth):
     """
     existing_user = await UsersDAO.get_one_or_none(email=user_data.email)
     if existing_user:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise UserAlreadyExistsException
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, hashed_password=hashed_password)
 
 
 @router.post('/login')
-async def login_user(response: Response, user_data: SUserAuth):
+async def login_user(response: Response, user_data: SUserAuth) -> dict:
     """
     Эндпоинт, осуществляющий логин пользователя в системе.
     Принимает пользовательские данные (почта и пароль).
@@ -43,14 +43,14 @@ async def login_user(response: Response, user_data: SUserAuth):
     """
     user = await authenticate_user(user_data.email, user_data.password)
     if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise IncorrectEmailOrPasswordException
     access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("booking_access_token", access_token, httponly=True)
     return {"access_token": access_token}
 
 
 @router.post('/logout')
-async def logout_user(response: Response):
+async def logout_user(response: Response) -> dict:
     """
     Эндпоинт для выхода пользователя из системы.
     Удаляет access токен из куки.
@@ -60,13 +60,17 @@ async def logout_user(response: Response):
 
 
 @router.get("/me")
-async def get_users_me(current_user: Users = Depends(get_current_user)):
+async def get_users_me(
+    current_user: Users = Depends(get_current_user)
+):
     """Эндпоинт,который возвращает текущего пользователя."""
     return current_user
 
 
 @router.get("/all")
-async def get_all_users(current_user: Users = Depends(get_current_admin_user)):
+async def get_all_users(
+    current_user: Users = Depends(get_current_admin_user)
+):
     """
     Эндпоинт,который возвращает всех пользователей имеющихся в системе.
     Необходимо для работы администратора. Для корректной работы необходимо

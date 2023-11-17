@@ -5,7 +5,6 @@ from app.bookings.schemas import SBooking
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 
-
 router = APIRouter(
     prefix='/bookings',
     tags=['Бронирования'],
