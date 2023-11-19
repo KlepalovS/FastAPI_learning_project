@@ -17,3 +17,11 @@ async def get_bookings(
 ) -> list[SBooking]:
     """Эндпоинт для получения всех бронирований пользователя."""
     return await BookingsDAO.get_all(user_id=user.id)
+
+
+@router.post("")
+async def add_booking(
+    user: Users = Depends(get_current_user)
+):
+    """Эндпоинт для добавления бронирования."""
+    await BookingsDAO.add()

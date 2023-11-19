@@ -6,3 +6,7 @@ class BookingsDAO(BaseDAO):
     """Объект для работы с данными бронирований."""
 
     model = Bookings
+
+    @classmethod
+    async def add(cls):
+        pass
