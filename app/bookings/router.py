@@ -1,3 +1,4 @@
+from datetime import date
 from fastapi import APIRouter, Depends
 
 from app.bookings.dao import BookingsDAO
@@ -21,7 +22,15 @@ async def get_bookings(
 
 @router.post("")
 async def add_booking(
-    user: Users = Depends(get_current_user)
+    room_id: int,
+    date_from: date,
+    date_to: date,
+    user: Users = Depends(get_current_user),
 ):
     """Эндпоинт для добавления бронирования."""
-    await BookingsDAO.add()
+    await BookingsDAO.add(
+        user.id,
+        room_id,
+        date_from,
+        date_to,
+    )
