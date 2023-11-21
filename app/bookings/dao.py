@@ -1,6 +1,7 @@
 from datetime import date
 
 from sqlalchemy import and_, func, or_, select
+
 from app.bookings.models import Bookings
 from app.database import async_session_maker, engine
 from app.hotels.models import Rooms
