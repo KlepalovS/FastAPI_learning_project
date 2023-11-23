@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.bookings.dao import BookingsDAO
 from app.bookings.schemas import SBooking
+from app.exceptions import RoomCanNotBeBooked
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 
@@ -29,9 +30,11 @@ async def add_booking(
     user: Users = Depends(get_current_user),
 ):
     """Эндпоинт для добавления бронирования."""
-    await BookingsDAO.add(
+    booking = await BookingsDAO.add(
         user.id,
         room_id,
         date_from,
         date_to,
     )
+    if not booking:
+        raise RoomCanNotBeBooked

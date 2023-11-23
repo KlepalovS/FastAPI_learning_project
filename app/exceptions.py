@@ -64,3 +64,13 @@ class NotAdminUserException(BookingException):
 
     status_code = status.HTTP_403_FORBIDDEN
     detail = 'Доступ запрещен! Пользователь с не админ!'
+
+
+class RoomCanNotBeBooked(BookingException):
+    """
+    Класс исключения, когда комната не может быть забронированна.
+    Например, количество свободных комнат равно или меньше нуля.
+    """
+
+    status_code = status.HTTP_409_CONFLICT
+    detail = 'Не осталось свободных номеров!'
