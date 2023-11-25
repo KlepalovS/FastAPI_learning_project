@@ -88,3 +88,14 @@ class BookingsDAO(BaseDAO):
             new_booking = await session.execute(add_booking)
             await session.commit()
             return new_booking.scalar()
+
+    @classmethod
+    async def delete(
+        cls,
+        user_id: int,
+        booking_id: int
+    ):
+        """
+        Метод удаления бронирования текущего пользователя из БД.
+        """
+        pass

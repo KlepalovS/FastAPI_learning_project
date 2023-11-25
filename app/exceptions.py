@@ -74,3 +74,10 @@ class RoomCanNotBeBooked(BookingException):
 
     status_code = status.HTTP_409_CONFLICT
     detail = 'Не осталось свободных номеров!'
+
+
+class BookingNotFound(BookingException):
+    """Класс исключения, когда бронирование не найдено в БД."""
+
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Бронирование не найдено по ID!"
