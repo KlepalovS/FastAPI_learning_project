@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 
 class SBooking(BaseModel):
+    """Pydantic схема для работы с бронированиями."""
+
     id: int
     room_id: int
     user_id: int
